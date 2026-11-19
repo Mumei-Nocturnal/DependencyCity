@@ -92,7 +92,8 @@ export default function City3D({ nodes = [], edges = [], height = 500 }) {
 
   return (
     <div>
-      <div style={{ width: '100%', height }}>
+      {/* (Canvas Div) */}
+      <div style={{ width: '100%', height }} className="overflow-hidden rounded-xl">
         <Canvas
           camera={{ position: [70, 55, 70], fov: 50 }}
           onPointerMissed={() => setSelectedId(null)} // click empty space = deselect
@@ -140,16 +141,8 @@ export default function City3D({ nodes = [], edges = [], height = 500 }) {
         </Canvas>
       </div>
 
-      {/* Details panel (outside the canvas) */}
-      <div
-        style={{
-          marginTop: 8,
-          padding: 10,
-          border: '1px solid #ccc',
-          borderRadius: 6,
-          minHeight: 60,
-        }}
-      >
+      {/* (Details Panel Div) */}
+      <div className="mt-3 min-h-[60px] rounded-lg border border-slate-800 bg-slate-950/60 p-3 text-sm text-slate-300">
         {selected ? (
           <>
             <strong>{selected.file_name}</strong>

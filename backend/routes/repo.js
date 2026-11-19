@@ -276,7 +276,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// ---------- GET /api/repo/:id/city (data for the 3D scene) ----------
+// ---------- GET /api/repo/:id/city (load a saved city) ----------
 router.get('/:id/city', async (req, res) => {
   const repoId = Number(req.params.id);
   if (!Number.isInteger(repoId)) {
@@ -285,7 +285,9 @@ router.get('/:id/city', async (req, res) => {
 
   try {
     const repo = await pool.query(
-      'SELECT id, owner, repo_name FROM repositories WHERE id = $1 AND user_id = $2',
+      `SELECT id, owner, repo_name, repo_url, description, language, stars,
+              default_branch, file_count, file_tree, analyzed_at
+       FROM repositories WHERE id = $1 AND user_id = $2`,
       [repoId, req.user.id]
     );
     if (repo.rows.length === 0) {
@@ -303,7 +305,14 @@ router.get('/:id/city', async (req, res) => {
       [repoId]
     );
 
-    res.json({ repository: repo.rows[0], nodes: nodes.rows, edges: edges.rows });
+    const { file_tree, ...repository } = repo.rows[0];
+
+    res.json({
+      repository,
+      fileTree: file_tree || [],
+      nodes: nodes.rows,
+      edges: edges.rows,
+    });
   } catch (err) {
     console.error('City error:', err);
     res.status(500).json({ error: 'Server error' });
