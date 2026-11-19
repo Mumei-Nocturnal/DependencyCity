@@ -1,6 +1,8 @@
 require('dotenv').config();
 require('dotenv').config();
 
+const authenticate = require('./middleware/auth');
+const repoRoutes = require('./routes/repo');
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db');
@@ -19,6 +21,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/repo', authenticate, repoRoutes);
 
 // Start server
 app.listen(PORT, () => {
