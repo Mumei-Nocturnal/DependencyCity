@@ -1,3 +1,4 @@
+import City3D from '../components/City3D';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
@@ -103,8 +104,9 @@ export default function Dashboard() {
               ))}
             </ul>
           )}
-          {/* ---------- end of City section ---------- */}
 
+          {nodes.length > 0 && <City3D nodes={nodes} edges={edges} />}
+          {/* ---------- end of City section ---------- */}
           <details>
             <summary>File tree (first 50 files)</summary>
             <ul style={{ maxHeight: 250, overflow: 'auto' }}>
