@@ -50,6 +50,9 @@ export default function Dashboard() {
 
   if (!user) return <p>Loading...</p>;
 
+  const nodes = result?.city?.nodes || [];
+  const edges = result?.city?.edges || [];
+
   return (
     <div style={{ maxWidth: 640, margin: '40px auto', padding: '0 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -83,6 +86,25 @@ export default function Dashboard() {
             Files: {result.repository.file_count} | Branch: {result.repository.default_branch}
           </p>
           {result.truncated && <p>Note: the file tree was too large and was truncated by GitHub.</p>}
+
+          {/* ---------- City section (new) ---------- */}
+          <h4>City</h4>
+          <p>
+            <strong>Buildings:</strong> {nodes.length} | <strong>Roads:</strong> {edges.length}
+          </p>
+          {nodes.length === 0 ? (
+            <p>No code files were found to build a city.</p>
+          ) : (
+            <ul>
+              {nodes.map((node) => (
+                <li key={node.id}>
+                  {node.file_name} (complexity: {node.complexity})
+                </li>
+              ))}
+            </ul>
+          )}
+          {/* ---------- end of City section ---------- */}
+
           <details>
             <summary>File tree (first 50 files)</summary>
             <ul style={{ maxHeight: 250, overflow: 'auto' }}>
