@@ -265,13 +265,38 @@ router.post('/analyze', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const result = await pool.query(
-      `SELECT id, owner, repo_name, repo_url, language, stars, file_count, analyzed_at
-       FROM repositories WHERE user_id = $1 ORDER BY analyzed_at DESC`,
+      `SELECT r.id, r.owner, r.repo_name, r.repo_url, r.language, r.stars,
+              r.file_count, r.analyzed_at,
+              (SELECT COUNT(*) FROM city_nodes n WHERE n.repo_id = r.id)::int AS node_count,
+              (SELECT COUNT(*) FROM city_edges e WHERE e.repo_id = r.id)::int AS edge_count
+       FROM repositories r
+       WHERE r.user_id = $1
+       ORDER BY r.analyzed_at DESC`,
       [req.user.id]
     );
     res.json({ repositories: result.rows });
   } catch (err) {
     console.error('List repos error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ---------- GET /api/repo/top-files (most complex files across all repos) ----------
+router.get('/top-files', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT n.id, n.file_name, n.file_path, n.complexity,
+              r.id AS repo_id, r.owner, r.repo_name
+       FROM city_nodes n
+       JOIN repositories r ON r.id = n.repo_id
+       WHERE r.user_id = $1
+       ORDER BY n.complexity DESC, r.repo_name, n.file_path
+       LIMIT 5`,
+      [req.user.id]
+    );
+    res.json({ files: result.rows });
+  } catch (err) {
+    console.error('Top files error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

@@ -1,3 +1,4 @@
+import AppHeader from '../components/AppHeader';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
@@ -184,30 +185,7 @@ export default function Dashboard() {
         <div className="absolute -top-16 right-1/4 h-72 w-72 rounded-full bg-indigo-500/15 blur-3xl" />
       </div>
 
-      {/* Glassmorphism header */}
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/50 shadow-[0_1px_0_0_rgba(255,255,255,0.04)] backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-600 text-sm font-bold shadow-lg shadow-violet-900/40 ring-1 ring-white/20">
-              D
-            </span>
-            <span className="text-lg font-semibold tracking-tight">DependencyCity</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="flex max-w-[170px] items-center gap-2 truncate rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300 sm:max-w-xs">
-              <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400" />
-              <span className="truncate">{user.email}</span>
-            </span>
-            <button
-              onClick={logout}
-              className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-200 transition-all duration-200 hover:border-white/25 hover:bg-white/10 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
+      <AppHeader email={user.email} onLogout={logout} />
 
       <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
         {/* Analyze box */}

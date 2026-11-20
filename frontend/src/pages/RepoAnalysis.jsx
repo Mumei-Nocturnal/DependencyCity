@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import api from '../api';
 import City3D from '../components/City3D';
+import { buildLabels } from '../utils/fileLabels';
+
+// Loaded only when the 2D tab is opened
+const DependencyGraph = lazy(() => import('../components/DependencyGraph'));
 
 const EMPTY = [];
 
@@ -126,28 +130,10 @@ const LEVELS = {
   High: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
 };
 
-/* ---------- Unique file labels ---------- */
-
-// Starts with the last two path parts ("lib/index.js") and adds more parts
-// only when two files would otherwise get the same label.
-function buildLabels(nodes) {
-  const labels = new Map();
-  const parts = nodes.map((n) => (n.file_path || n.file_name || '').split('/'));
-
-  nodes.forEach((n, i) => {
-    const make = (d, idx = i) => parts[idx].slice(-d).join('/');
-    let depth = Math.min(2, parts[i].length);
-    while (
-      depth < parts[i].length &&
-      nodes.some((_, j) => j !== i && make(depth, j) === make(depth))
-    ) {
-      depth += 1;
-    }
-    labels.set(n.id, make(depth));
-  });
-
-  return labels;
-}
+const VIEWS = [
+  { key: '3d', label: '3D City View' },
+  { key: '2d', label: '2D Graph View' },
+];
 
 /* ---------- Page ---------- */
 
@@ -159,6 +145,7 @@ export default function RepoAnalysis() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expanded, setExpanded] = useState(false);
+  const [view, setView] = useState('3d');
 
   // Load the saved city
   useEffect(() => {
@@ -189,7 +176,7 @@ export default function RepoAnalysis() {
     };
   }, [id, navigate]);
 
-  // Expanded 3D view: Escape closes it, and the page behind does not scroll
+  // Expanded view: Escape closes it, and the page behind does not scroll
   useEffect(() => {
     if (!expanded) return undefined;
     const onKey = (e) => e.key === 'Escape' && setExpanded(false);
@@ -268,6 +255,8 @@ export default function RepoAnalysis() {
         : 'No local imports were detected between the analyzed files. ') +
       `${labelOf(analysis.mostComplex)} is the most complex file, with a score of ${analysis.mostComplex.complexity}.`
     : '';
+
+  const viewHeight = expanded ? 'calc(100vh - 270px)' : 560;
 
   return (
     <div className="relative isolate min-h-screen bg-slate-950 text-slate-100">
@@ -498,36 +487,74 @@ export default function RepoAnalysis() {
               )}
             </section>
 
-            {/* 3D city (becomes a full-screen overlay when expanded) */}
+            {/* 3D city / 2D graph (becomes a full-screen overlay when expanded) */}
             <section className={expanded ? 'fixed inset-0 z-50 overflow-auto bg-slate-950 p-4 sm:p-6' : ''}>
               <div className="rounded-2xl border border-slate-800 bg-slate-900 p-4 shadow-lg">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3 px-2">
                   <div>
-                    <h2 className="text-lg font-semibold">3D City</h2>
+                    <h2 className="text-lg font-semibold">
+                      {view === '3d' ? '3D City' : 'Dependency Graph'}
+                    </h2>
                     <p className="text-xs text-slate-500">
-                      Drag to rotate · scroll to zoom · click a building
+                      {view === '3d'
+                        ? 'Drag to rotate · scroll to zoom · click a building'
+                        : 'Drag nodes or the background · scroll to zoom · hover or click a node'}
                       {expanded ? ' · Esc to close' : ''}
                     </p>
                   </div>
-                  <button
-                    onClick={() => setExpanded((v) => !v)}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-200 transition-all duration-200 hover:scale-105 hover:border-violet-500/60 hover:bg-slate-800 active:scale-95"
-                  >
-                    {expanded ? <Close /> : <Maximize />}
-                    {expanded ? 'Close' : 'Expand 3D View'}
-                  </button>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* View switcher */}
+                    <div
+                      role="tablist"
+                      className="inline-flex rounded-lg border border-slate-700 bg-slate-950/60 p-1 text-sm"
+                    >
+                      {VIEWS.map((v) => (
+                        <button
+                          key={v.key}
+                          role="tab"
+                          aria-selected={view === v.key}
+                          onClick={() => setView(v.key)}
+                          className={`rounded-md px-3 py-1.5 transition-all duration-200 ${
+                            view === v.key
+                              ? 'bg-violet-600 text-white shadow'
+                              : 'text-slate-300 hover:bg-slate-800'
+                          }`}
+                        >
+                          {v.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => setExpanded((v) => !v)}
+                      className="inline-flex items-center gap-2 rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-200 transition-all duration-200 hover:scale-105 hover:border-violet-500/60 hover:bg-slate-800 active:scale-95"
+                    >
+                      {expanded ? <Close /> : <Maximize />}
+                      {expanded ? 'Close' : 'Expand'}
+                    </button>
+                  </div>
                 </div>
 
                 {nodes.length === 0 ? (
                   <p className="px-2 pb-2 text-sm text-slate-400">
                     No code files were found to build a city.
                   </p>
+                ) : view === '3d' ? (
+                  <City3D nodes={nodes} edges={edges} height={viewHeight} />
                 ) : (
-                  <City3D
-                    nodes={nodes}
-                    edges={edges}
-                    height={expanded ? 'calc(100vh - 270px)' : 560}
-                  />
+                  <Suspense
+                    fallback={
+                      <div
+                        className="flex items-center justify-center text-sm text-slate-500"
+                        style={{ height: viewHeight }}
+                      >
+                        Loading graph...
+                      </div>
+                    }
+                  >
+                    <DependencyGraph nodes={nodes} edges={edges} height={viewHeight} />
+                  </Suspense>
                 )}
               </div>
             </section>
