@@ -11,10 +11,10 @@ export default function Settings() {
   const userEmail = localStorage.getItem('userEmail') || 'User';
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userEmail');
-    navigate('/login');
-  };
+  localStorage.removeItem('token');
+  localStorage.removeItem('userEmail');
+  navigate('/', { replace: true }); 
+};
 
   const [token, setToken] = useState('');
   const [show, setShow] = useState(false);

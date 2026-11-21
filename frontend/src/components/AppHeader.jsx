@@ -5,13 +5,10 @@ export default function AppHeader({ email, onLogout }) {
   const token = localStorage.getItem('token');
 
   const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    } else {
-      localStorage.removeItem('token');
-      navigate('/login');
-    }
-  };
+  localStorage.removeItem('token');
+  localStorage.removeItem('userEmail');
+  navigate('/', { replace: true }); 
+};
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/50 shadow-[0_1px_0_0_rgba(255,255,255,0.04)] backdrop-blur-xl">

@@ -160,9 +160,9 @@ export default function RepoAnalysis() {
       })
       .catch((err) => {
         if (cancelled) return;
-        if (err.response?.status === 401) {
+          if (err.response?.status === 401) {
           localStorage.removeItem('token');
-          navigate('/login');
+          navigate('/login', { replace: true });
           return;
         }
         setError(err.response?.data?.error || 'Could not load this repository');

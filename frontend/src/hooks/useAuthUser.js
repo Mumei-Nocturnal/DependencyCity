@@ -15,7 +15,7 @@ export default function useAuthUser() {
       })
       .catch(() => {
         localStorage.removeItem('token');
-        if (!cancelled) navigate('/login');
+        if (!cancelled) navigate('/login', { replace: true });
       });
     return () => {
       cancelled = true;
@@ -24,7 +24,7 @@ export default function useAuthUser() {
 
   const logout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   return { user, logout };

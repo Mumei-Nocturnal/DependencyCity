@@ -131,7 +131,7 @@ export default function Dashboard() {
       })
       .catch(() => {
         localStorage.removeItem('token');
-        navigate('/login');
+        navigate('/login', { replace: true });
       });
   }, [navigate]);
 
@@ -161,7 +161,7 @@ export default function Dashboard() {
 
   const logout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   if (!user) {
