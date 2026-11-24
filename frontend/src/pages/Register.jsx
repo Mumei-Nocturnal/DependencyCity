@@ -40,29 +40,6 @@ const CheckIcon = ({ className = 'h-3.5 w-3.5' }) => (
     <polyline points="20 6 9 17 4 12" />
   </Icon>
 );
-const CubeIcon = () => (
-  <Icon className="h-5 w-5">
-    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-    <line x1="12" y1="22.08" x2="12" y2="12" />
-  </Icon>
-);
-const BarsIcon = () => (
-  <Icon className="h-5 w-5">
-    <line x1="18" y1="20" x2="18" y2="10" />
-    <line x1="12" y1="20" x2="12" y2="4" />
-    <line x1="6" y1="20" x2="6" y2="14" />
-  </Icon>
-);
-const NetworkIcon = () => (
-  <Icon className="h-5 w-5">
-    <circle cx="18" cy="5" r="3" />
-    <circle cx="6" cy="12" r="3" />
-    <circle cx="18" cy="19" r="3" />
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-  </Icon>
-);
 
 function Spinner() {
   return (
@@ -75,7 +52,6 @@ function Spinner() {
 
 /* ---------- Form pieces ---------- */
 
-// Input with a label and an icon. Password fields get a Show / Hide toggle.
 function Field({ id, label, type = 'text', icon, ...props }) {
   const [show, setShow] = useState(false);
   const isPassword = type === 'password';
@@ -185,50 +161,6 @@ function StrengthMeter({ password }) {
   );
 }
 
-/* ---------- Decorative side panel ---------- */
-
-const BARS = [38, 64, 46, 92, 58, 78, 40, 70, 52];
-
-function Skyline() {
-  return (
-    <div className="relative mt-10">
-      <div className="absolute inset-x-6 bottom-0 h-24 rounded-full bg-violet-600/30 blur-3xl" />
-      <div className="relative flex items-end gap-2">
-        {BARS.map((h, i) => (
-          <div key={i} className="relative flex-1" style={{ height: h * 1.6 }}>
-            <div
-              className="absolute inset-0 rounded-t-md"
-              style={{
-                backgroundImage:
-                  'repeating-linear-gradient(0deg, rgba(186,230,253,0.16) 0 1px, transparent 1px 9px), linear-gradient(180deg, rgba(139,92,246,0.55), rgba(56,189,248,0.1))',
-                border: '1px solid rgba(125,211,252,0.3)',
-                borderBottom: 'none',
-                boxShadow: '0 0 20px rgba(56,189,248,0.2)',
-              }}
-            />
-            <div
-              className="absolute -top-px left-1 right-1 h-0.5 animate-pulse rounded-full bg-sky-300"
-              style={{ animationDelay: `${i * 0.35}s` }}
-            />
-          </div>
-        ))}
-      </div>
-      <div
-        className="h-px"
-        style={{
-          backgroundImage: 'linear-gradient(90deg, transparent, rgba(125,211,252,0.6), transparent)',
-        }}
-      />
-    </div>
-  );
-}
-
-const BENEFITS = [
-  { icon: <CubeIcon />, title: 'Files become buildings', text: 'Paste a public GitHub repository and explore it in 3D.' },
-  { icon: <BarsIcon />, title: 'Height shows complexity', text: 'Spot the heaviest files at a glance.' },
-  { icon: <NetworkIcon />, title: 'Roads show imports', text: 'See which files depend on each other.' },
-];
-
 /* ---------- Page ---------- */
 
 export default function Register() {
@@ -288,181 +220,136 @@ export default function Register() {
         />
       </div>
 
-      <div className="grid w-full max-w-5xl items-center gap-12 lg:grid-cols-2">
-        {/* Left: product pitch (large screens only) */}
-        <div className="hidden lg:block">
-          <Link to="/" className="inline-flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-base font-bold shadow-lg shadow-violet-900/40 ring-1 ring-white/20">
-              D
-            </span>
-            <span className="text-xl font-semibold tracking-tight">DependencyCity</span>
-          </Link>
+      {/* Ab yeh poori screen ke center mein ek hi column (card) hai */}
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <Link to="/" className="mb-6 flex items-center justify-center gap-2.5">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-base font-bold shadow-lg shadow-violet-900/40 ring-1 ring-white/20">
+            D
+          </span>
+          <span className="text-xl font-semibold tracking-tight">DependencyCity</span>
+        </Link>
 
-          <h2 className="mt-10 text-4xl font-bold leading-tight tracking-tight">
-            Turn any codebase into a{' '}
-            <span
-              style={{
-                backgroundImage: 'linear-gradient(90deg, #a78bfa, #818cf8 45%, #38bdf8)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-              }}
-            >
-              3D city
-            </span>
-          </h2>
-          <p className="mt-4 max-w-md text-slate-400">
-            Create an account to analyze repositories, save your cities and revisit them anytime.
-          </p>
+        {/* Glass card with a thin gradient border */}
+        <div
+          className="rounded-2xl p-px shadow-[0_20px_80px_-20px_rgba(139,92,246,0.5)]"
+          style={{
+            backgroundImage:
+              'linear-gradient(135deg, rgba(139,92,246,0.55), rgba(56,189,248,0.25) 50%, rgba(255,255,255,0.06))',
+          }}
+        >
+          <div className="rounded-2xl bg-slate-950/70 p-8 backdrop-blur-xl">
+            <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
+            <p className="mt-1.5 text-sm text-slate-400">
+              Start turning codebases into cities. It only takes a moment.
+            </p>
 
-          <ul className="mt-8 space-y-4">
-            {BENEFITS.map((b) => (
-              <li key={b.title} className="flex items-start gap-3.5">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-500/30 bg-violet-500/10 text-violet-300">
-                  {b.icon}
-                </span>
-                <div>
-                  <div className="text-sm font-semibold">{b.title}</div>
-                  <div className="text-sm text-slate-400">{b.text}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <Field
+                id="email"
+                label="Email"
+                type="email"
+                icon={<MailIcon />}
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
+                autoFocus
+                required
+                disabled={loading}
+              />
 
-          <Skyline />
-        </div>
-
-        {/* Right: the form card */}
-        <div className="mx-auto w-full max-w-md">
-          {/* Logo (small screens only) */}
-          <Link to="/" className="mb-6 flex items-center justify-center gap-2.5 lg:hidden">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600 text-base font-bold shadow-lg shadow-violet-900/40 ring-1 ring-white/20">
-              D
-            </span>
-            <span className="text-xl font-semibold tracking-tight">DependencyCity</span>
-          </Link>
-
-          {/* Glass card with a thin gradient border */}
-          <div
-            className="rounded-2xl p-px shadow-[0_20px_80px_-20px_rgba(139,92,246,0.5)]"
-            style={{
-              backgroundImage:
-                'linear-gradient(135deg, rgba(139,92,246,0.55), rgba(56,189,248,0.25) 50%, rgba(255,255,255,0.06))',
-            }}
-          >
-            <div className="rounded-2xl bg-slate-950/70 p-8 backdrop-blur-xl">
-              <h1 className="text-2xl font-semibold tracking-tight">Create your account</h1>
-              <p className="mt-1.5 text-sm text-slate-400">
-                Start turning codebases into cities. It only takes a moment.
-              </p>
-
-              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <div>
                 <Field
-                  id="email"
-                  label="Email"
-                  type="email"
-                  icon={<MailIcon />}
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  autoFocus
+                  id="password"
+                  label="Password"
+                  type="password"
+                  icon={<LockIcon />}
+                  placeholder="Create a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
                   required
                   disabled={loading}
                 />
+                <StrengthMeter password={password} />
+              </div>
 
-                <div>
-                  <Field
-                    id="password"
-                    label="Password"
-                    type="password"
-                    icon={<LockIcon />}
-                    placeholder="Create a password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="new-password"
-                    required
-                    disabled={loading}
-                  />
-                  <StrengthMeter password={password} />
-                </div>
+              <div>
+                <Field
+                  id="confirm"
+                  label="Confirm password"
+                  type="password"
+                  icon={<LockIcon />}
+                  placeholder="Repeat your password"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  autoComplete="new-password"
+                  required
+                  disabled={loading}
+                />
+                {confirm.length > 0 && (
+                  <p
+                    className={`mt-1.5 flex items-center gap-1.5 text-xs ${
+                      matches ? 'text-emerald-300' : 'text-red-400'
+                    }`}
+                  >
+                    {matches ? (
+                      <>
+                        <CheckIcon /> Passwords match
+                      </>
+                    ) : (
+                      'Passwords do not match yet'
+                    )}
+                  </p>
+                )}
+              </div>
 
-                <div>
-                  <Field
-                    id="confirm"
-                    label="Confirm password"
-                    type="password"
-                    icon={<LockIcon />}
-                    placeholder="Repeat your password"
-                    value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
-                    autoComplete="new-password"
-                    required
-                    disabled={loading}
-                  />
-                  {confirm.length > 0 && (
-                    <p
-                      className={`mt-1.5 flex items-center gap-1.5 text-xs ${
-                        matches ? 'text-emerald-300' : 'text-red-400'
-                      }`}
-                    >
-                      {matches ? (
-                        <>
-                          <CheckIcon /> Passwords match
-                        </>
-                      ) : (
-                        'Passwords do not match yet'
-                      )}
-                    </p>
+              {error && (
+                <div
+                  role="alert"
+                  className="rounded-lg border border-red-900/60 bg-red-950/40 px-4 py-2.5 text-sm text-red-300"
+                >
+                  {error}
+                  {exists && (
+                    <>
+                      {' '}
+                      <Link to="/login" className="font-medium text-violet-300 underline underline-offset-2">
+                        Sign in instead
+                      </Link>
+                    </>
                   )}
                 </div>
+              )}
 
-                {error && (
-                  <div
-                    role="alert"
-                    className="rounded-lg border border-red-900/60 bg-red-950/40 px-4 py-2.5 text-sm text-red-300"
-                  >
-                    {error}
-                    {exists && (
-                      <>
-                        {' '}
-                        <Link to="/login" className="font-medium text-violet-300 underline underline-offset-2">
-                          Sign in instead
-                        </Link>
-                      </>
-                    )}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={!canSubmit}
-                  className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 transition-all duration-200 hover:scale-[1.02] hover:bg-violet-500 hover:shadow-violet-600/40 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/60 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-violet-600"
-                >
-                  {loading && <Spinner />}
-                  {loading ? 'Creating account...' : 'Create account'}
-                </button>
-              </form>
-            </div>
-          </div>
-
-          {/* Links under the card */}
-          <div className="mt-6 space-y-3 text-center text-sm text-slate-400">
-            <p>
-              Already have an account?{' '}
-              <Link
-                to="/login"
-                className="font-medium text-violet-400 transition-colors duration-200 hover:text-violet-300"
+              <button
+                type="submit"
+                disabled={!canSubmit}
+                className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-900/40 transition-all duration-200 hover:scale-[1.02] hover:bg-violet-500 hover:shadow-violet-600/40 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/60 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:bg-violet-600"
               >
-                Sign in
-              </Link>
-            </p>
-            <p>
-              <Link to="/" className="text-slate-500 transition-colors duration-200 hover:text-slate-300">
-                ← Back to home
-              </Link>
-            </p>
+                {loading && <Spinner />}
+                {loading ? 'Creating account...' : 'Create account'}
+              </button>
+            </form>
           </div>
+        </div>
+
+        {/* Links under the card */}
+        <div className="mt-6 space-y-3 text-center text-sm text-slate-400">
+          <p>
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              className="font-medium text-violet-400 transition-colors duration-200 hover:text-violet-300"
+            >
+              Sign in
+            </Link>
+          </p>
+          <p>
+            <Link to="/" className="text-slate-500 transition-colors duration-200 hover:text-slate-300">
+              ← Back to home
+            </Link>
+          </p>
         </div>
       </div>
     </div>
